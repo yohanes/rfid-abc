@@ -79,6 +79,8 @@ while not done:
 
      letter = ''
 
+     print "lookup events"
+
      for event in pygame.event.get():
          if event.type == pygame.QUIT: sys.exit()
 
@@ -90,10 +92,15 @@ while not done:
                   (event.key >= ord('A') and event.key<=ord('Z'))):
                    letter = chr(event.key).upper()
      
+
+
+     print "done"
+
      w = 0
      if (connected):
           try:
                w = s.inWaiting()
+	       print w		
           except:
                connected = False               
      else:
@@ -115,6 +122,10 @@ while not done:
      if (w>0):
           try:
                data = s.readline()
+	       x = s.inWaiting()
+	       if (x>0):
+		  s.read(x)
+	       print data
                number= data.strip()
           except:
                connected = False
@@ -129,7 +140,7 @@ while not done:
      if (letter!='' and letter_image.has_key(letter)):
           now = time()
           delta = now - last_time;
-          if (current_letter!=letter or delta>REPEAT_TIME):
+          if (current_letter!=letter):
 
                print "scaling"
 
@@ -144,14 +155,16 @@ while not done:
                print scale
                current = pygame.transform.scale(orig, (int(orig_rect.width*scale), int(orig_rect.height*scale)))
                current_rect = current.get_rect()
+               current_letter = letter
 
+               print letter
+
+     if (current_letter!=letter or delta>REPEAT_TIME):
                if (letter_sound.has_key(letter)):
                     letter_sound[letter].play()
 
-               current_letter = letter
                last_time = time()
                
-               print letter
      
      sys.stdout.flush()
 
